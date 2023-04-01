@@ -1,14 +1,20 @@
 from django.shortcuts import render
-from rest_framework import generics
-from basic_api.models import DRFPost
-from basic_api.serializers import DRFPostSerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 
 
-class API_objects(generics.ListCreateAPIView):
-    queryset = DRFPost.objects.all()
-    serializer_class = DRFPostSerializer
+@api_view(['GET', 'POST'])
+def firstAPI(request):
+    if request.method == 'GET':
+        context = {
+            'name': "Abu Bakkar Siddikk",
+            'age': 25
+        }
+        return Response(context)
 
-
-class API_objects_details(generics.RetrieveUpdateDestroyAPIView):
-    queryset = DRFPost.objects.all()
-    serializer_class = DRFPostSerializer
+    elif request.method == 'POST':
+        name = request.data['name']
+        age = request.data['age']
+        print("Hello Everyone")
+        return Response({'name': name, 'age': age})
