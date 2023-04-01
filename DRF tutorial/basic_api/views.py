@@ -1,7 +1,6 @@
-from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.decorators import api_view
+from django.contrib.auth.models import User
 
 
 @api_view(['GET', 'POST'])
@@ -18,3 +17,28 @@ def firstAPI(request):
         age = request.data['age']
         print("Hello Everyone")
         return Response({'name': name, 'age': age})
+
+
+@api_view(['GET', 'POST'])
+def registrationAPI(request):
+    if request.method == 'POST':
+        username = request.data['username']
+        email = request.data['email']
+        first_name = request.data['first_name']
+        last_name = request.data['last_name']
+        password1 = request.data['password1']
+        password2 = request.data['password2']
+        if User.objects.filter(username=username).exists():
+            return Response({'message': 'Username already exists', "username": username})
+        else:
+            if password1 == password2:
+                user = User.objects.create_user(username=username, email=email, password=password1,
+                                                first_name=first_name, last_name=last_name, is_active=True)
+                user.save()
+                return Response({'message': 'User created successfully'})
+            else:
+                return Response({'message': 'Password does not match'})
+
+    elif request.method == 'GET':
+        users = User.objects.all()
+        return Response({'message': 'This is get method', 'users': users})
