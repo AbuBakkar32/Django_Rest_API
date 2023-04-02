@@ -5,9 +5,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView, \
+    ListCreateAPIView, RetrieveUpdateAPIView, RetrieveDestroyAPIView, RetrieveUpdateDestroyAPIView
 
-from .models import Contact
+from .models import Contact, BlogPost
 from .serializers import ContactSerializer, ContactForm, PostSerializer
 
 
@@ -92,10 +93,38 @@ class ContactAPIView(APIView):
 
 
 # Generic API View
-class PostCreatedAPIView(CreateAPIView):
-    permission_classes = [IsAuthenticated, ]
-    queryset = Contact.objects.all()
+class PostCreatedAPIView(ListCreateAPIView):
+    permission_classes = [AllowAny, ]
+    queryset = BlogPost.objects.all()
     serializer_class = PostSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = PostSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def get_queryset(self):
+        return BlogPost.objects.filter(is_active=True)
+
+
+class PostRetrieveAPIView(RetrieveAPIView):
+    permission_classes = [AllowAny, ]
+    queryset = BlogPost.objects.all()
+    serializer_class = PostSerializer
+    lookup_field = 'id'
+
+
+class PostRetrieveUpdateAPIView(RetrieveUpdateAPIView):
+    permission_classes = [AllowAny, ]
+    queryset = BlogPost.objects.all()
+    serializer_class = PostSerializer
+    lookup_field = 'id'

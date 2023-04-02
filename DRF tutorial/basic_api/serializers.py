@@ -19,5 +19,5 @@ class ContactSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogPost
-        # fields = '__all__'
-        fields = ['title', 'details']
+        fields = '__all__'
+        # fields = ['title', 'details']
