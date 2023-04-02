@@ -5,9 +5,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 
 from .models import Contact
-from .serializers import ContactSerializer, ContactForm
+from .serializers import ContactSerializer, ContactForm, PostSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -72,6 +73,7 @@ def registrationAPI(request):
 #             return Response({'message': 'This is get method', 'contacts': contacts})
 
 
+# Class based API View
 class ContactAPIView(APIView):
     permission_classes = [AllowAny, ]
 
@@ -83,6 +85,17 @@ class ContactAPIView(APIView):
         else:
             return Response({'message': 'Invalid data'})
 
-    def get(self):
+    def get(self, request, format=None):
         contacts = Contact.objects.all()
-        return Response({'message': 'This is get method', 'contacts': contacts})
+        serializer = ContactSerializer(contacts, many=True)
+        return Response(serializer.data)
+
+
+# Generic API View
+class PostCreatedAPIView(CreateAPIView):
+    permission_classes = [IsAuthenticated, ]
+    queryset = Contact.objects.all()
+    serializer_class = PostSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
