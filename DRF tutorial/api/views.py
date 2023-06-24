@@ -12,7 +12,8 @@ def api_view(request, *args, **kwargs):
         data = json.loads(body)
     except:
         pass
-    data['headers'] = request.headers
+    data['params'] = dict(request.GET)
+    data['headers'] = dict(request.headers)
     data['content_type'] = request.content_type
     print(data)
     return JsonResponse(data)
