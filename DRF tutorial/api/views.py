@@ -4,26 +4,26 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from products.models import Product
 from django.forms.models import model_to_dict
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from products.seriallizers import ProductSerializer
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, RetrieveAPIView
 
 
-# Create your views here.
-@api_view(["GET"])
 def api_view(request, *args, **kwargs):
-    serializer = ProductSerializer(data=request.data)
-    if request.method == "POST":
-        if serializer.is_valid:
-            instance = serializer.save()
-            print(serializer.data)
-            data = serializer.data
-            return Response(data)
-    if request.method == "GET":
-        data = Product.objects.all().order_by("id")
-        print(data)
-        return JsonResponse(data)
-    # return Response({"Invalid": "Not Get Data"}, status=400)
+    if request.method == 'GET':
+        snippets = Product.objects.all()
+        serializer = ProductSerializer(snippets, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ProductSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
 
 # def api_view(request, *args, **kwargs):
 #     body = request.body
