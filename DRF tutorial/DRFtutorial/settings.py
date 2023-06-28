@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'basic_api',
     'products',
     'api',
+    'django_filters',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
