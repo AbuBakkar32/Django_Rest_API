@@ -17,13 +17,13 @@ class ProductDetailsAPIView(RetrieveAPIView):
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
 
-
+# Product Retrieve Update Destroy API Generic View
 class ProductRetrieveUpdateDestroyAPIViewDetails(RetrieveUpdateDestroyAPIView):
     print("Hello Django Rest API")
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-
+# Search view for search form
 def search(request):
     user_list = User.objects.all()
     user_filter = UserFilter(request.GET, queryset=user_list)
