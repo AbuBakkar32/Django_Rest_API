@@ -20,6 +20,11 @@ class ProductDetailsAPIView(RetrieveAPIView):
 
 # Product Retrieve Update Destroy API Generic View
 class ProductRetrieveUpdateDestroyAPIViewDetails(RetrieveUpdateDestroyAPIView):
+    """
+    Api view queryset and serializer_class used to get the data
+    and serializer_class call will help to convert the object
+    data into the json format
+    """
     print("Hello Django Rest API")
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
