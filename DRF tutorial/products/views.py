@@ -12,6 +12,7 @@ from django.shortcuts import render
 from .filters import UserFilter
 
 
+# API views for product details and product list
 class ProductDetailsAPIView(RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
