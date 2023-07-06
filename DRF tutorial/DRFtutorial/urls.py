@@ -49,11 +49,15 @@ urlpatterns = [
     path('api/firstapp/', include('basic_api.urls')),
     path('api/login-api', obtain_auth_token, name='api_token_auth'),
 
+    # START- Token Based Authentication
     path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # END- Token Based Authentication
 
+    # START- API Based Product information
     path('api/', include('api.urls')),
     path('api/product/', include('products.urls'))
+    # END- API Based Product information
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
